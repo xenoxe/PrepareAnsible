@@ -1,0 +1,32 @@
+---
+##------------------------------------------------------------------------------------
+##- Version:     1.0.0.0
+##------------------------------------------------------------------------------------
+##- Title:       Prepare ansible
+##- Author:      Mohamed TALEB [mtaleb.exp@gmail.com] 
+##- Application: 
+##- Description: 
+##- Version:     1.0.0.0
+##- Date:        16-03-2020
+##------------------------------------------------------------------------------------
+## Run with :
+## ansible-playbook prepare_ansible.yml -u root -k 
+##------------------------------------------------------------------------------------
+- hosts: all
+  gather_facts: False
+  remote_user: root
+  vars:
+    pkgs: ["python", "MySQL-python" ]    
+    
+  tasks: 
+  - name: Install packges  
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items: "{{ pkgs }}"
+  
+  - name: Add authorized_keys
+    authorized_key: user=root
+                    exclusive=no
+                    key="{{ lookup('file', '~/.ssh/ansible.pub') }}"
+  
